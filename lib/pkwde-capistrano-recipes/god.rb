@@ -6,16 +6,16 @@ Capistrano::Configuration.instance(:must_exist).load do
         cc = CapistranoCommander.new
         god_config = "#{current_path}/services/pkwde/lib/setup.god"
         cc << "cd #{current_path}/services/pkwde"
-        cc << "if god 1>/dev/null status"
+        cc << "if bundle exec god 1>/dev/null status"
         cc << "then echo 'god master already started'"
-        cc << "else test -e #{god_config} && RAILS_ENV=#{rails_env} god -c #{god_config}"
+        cc << "else test -e #{god_config} && RAILS_ENV=#{rails_env} bundle exec god -c #{god_config}"
         cc << "fi"
         run cc.cmd
       end
 
       desc "Stop the god master process"
       task :stop do
-        run "god terminate"
+        run "bundle exec god terminate"
       end
 
       desc "Terminate god and start it again"
@@ -26,7 +26,7 @@ Capistrano::Configuration.instance(:must_exist).load do
 
       desc "Status of the god master process"
       task :status do
-        run "god status; true"
+        run "bundle exec god status; true"
       end
     end
 
@@ -46,9 +46,9 @@ Capistrano::Configuration.instance(:must_exist).load do
       cc = CapistranoCommander.new
       each_service do |service_path, service|
         god_config = "#{current_path}/#{service_path}/setup.god"
-        cc << "if god 1>/dev/null status && [ -e #{god_config} ]"
-        cc << "then god load #{god_config}"
-        cc << "else RAILS_ENV=#{rails_env} god -c #{god_config}"
+        cc << "if bundle exec god 1>/dev/null status && [ -e #{god_config} ]"
+        cc << "then bundle exec god load #{god_config}"
+        cc << "else RAILS_ENV=#{rails_env} bundle exec god -c #{god_config}"
         cc << "fi"
       end
       run cc.cmd
@@ -59,12 +59,12 @@ Capistrano::Configuration.instance(:must_exist).load do
       cc = CapistranoCommander.new
       each_service do |service_path, service|
         god_config = "#{current_path}/#{service_path}/setup.god"
-        cc << "if god 1>/dev/null status"
-        cc << "then god stop #{service}"
-        cc << "god remove #{service}"
-        cc << "[ -e #{god_config} ] && god load #{god_config}"
+        cc << "if bundle exec god 1>/dev/null status"
+        cc << "then bundle exec god stop #{service}"
+        cc << "bundle exec god remove #{service}"
+        cc << "[ -e #{god_config} ] && bundle exec god load #{god_config}"
         cc << "true"
-        cc << "else RAILS_ENV=#{rails_env} god -c #{god_config}"
+        cc << "else RAILS_ENV=#{rails_env} bundle exec god -c #{god_config}"
         cc << "fi"
       end
       run cc.cmd
@@ -75,9 +75,9 @@ Capistrano::Configuration.instance(:must_exist).load do
       on_rollback{find_and_execute_task("god:start")}
       cc = CapistranoCommander.new
       each_service do |service_path, service|
-        cc << "if god 1>/dev/null status"
-        cc << "then god stop #{service}"
-        cc << "god remove #{service}"
+        cc << "if bundle exec god 1>/dev/null status"
+        cc << "then bundle exec god stop #{service}"
+        cc << "bundle exec god remove #{service}"
         cc << "fi"
       end
       run cc.cmd
@@ -87,7 +87,7 @@ Capistrano::Configuration.instance(:must_exist).load do
     task :status do
       cc = CapistranoCommander.new
       each_service do |service_path, service|
-        cc << "god status #{service} || true"
+        cc << "bundle exec god status #{service} || true"
       end
       run cc.cmd
     end

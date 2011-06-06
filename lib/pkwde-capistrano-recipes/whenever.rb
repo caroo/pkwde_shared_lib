@@ -7,7 +7,7 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
         pushd $s;
         if [ -e #{file} ];
         then
-          whenever --load-file #{file} --set environment=#{stage || "development"} --update-crontab $s;
+          bundle exec whenever --load-file #{file} --set environment=#{stage || "development"} --update-crontab $s;
         else
           true;
         fi;
