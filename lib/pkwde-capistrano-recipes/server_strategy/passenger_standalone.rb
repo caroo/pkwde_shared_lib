@@ -1,7 +1,7 @@
 Capistrano::Configuration.instance(:must_exist).load do
   
   set :pid_file, defer{"#{current_path}/tmp/pids/#{application}.pid"}
-  set :log_file, defer{"/#{current_path}/log/#{application}_stderror.log"}
+  set :log_file, defer{"#{current_path}/log/#{application}_stderror.log"}
   set :rackup_file, defer{"#{current_path}/config.ru"}
   
   namespace :deploy do
