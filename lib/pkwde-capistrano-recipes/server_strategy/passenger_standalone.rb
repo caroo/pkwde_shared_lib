@@ -1,8 +1,8 @@
 Capistrano::Configuration.instance(:must_exist).load do
   
-  fetch :pid_file, defer{"/var/run/#{user}/#{application}.pid"}
-  fetch :log_file, defer{"/var/#{user}/#{application}/current/log/#{application}_stderror.log"}
-  fetch :rackup_file, defer{"#{release_path}/config.ru"}
+  fetch :pid_file, defer{"#{current_path}/tmp/pids/#{application}.pid"}
+  fetch :log_file, defer{"/#{current_path}/log/#{application}_stderror.log"}
+  fetch :rackup_file, defer{"#{current_path}/config.ru"}
   
   namespace :deploy do
     desc "Restarts passenger standalone server."

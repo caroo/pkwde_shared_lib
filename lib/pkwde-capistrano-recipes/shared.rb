@@ -4,7 +4,6 @@ Capistrano::Configuration.instance(:must_exist).load do
   # =====================================================================
   on :load do
     set_deployment_server
-    require 'capistrano/ext/multistage'
     set :rails_env, defer{stage}
     default_run_options[:tty] = true
   end
@@ -22,15 +21,16 @@ Capistrano::Configuration.instance(:must_exist).load do
   def run_migrations?
     !ENV["FORCE_MIGRATIONS"].nil?
   end
-
-  # Setzen der mustistage tasks, damit autoverfollstaendigung weiter funktioniert
-  [:testing, :staging, :production].each do |stage_name|
-    desc "Just the placeholder for 'capistrano/ext/multistage' task '#{stage_name}'"
-    task stage_name do
-      #do nothing
-    end
-  end
-
+  
+  # configure multistage environments
+  set :stages, %w[testing staging production]
+  
+  #configure scm
+  set :scm, :git
+  set :scm_verbose, true
+  set :deploy_via, :remote_cache
+  set :copy_exclude, %w[.git]
+  
   # ==================================
   # = Setzen von Release-Ordnernamen =
   # ==================================

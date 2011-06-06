@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'capistrano'
+require 'capistrano/ext/multistage'
 
 class CapistranoCommander
   def initialize
