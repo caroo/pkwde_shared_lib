@@ -1,0 +1,97 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'fileutils'
+include FileUtils
+require 'io/wait'
+require 'spruz/go'
+include Spruz::GO
+
+HOSTS_DIR = ENV["HOSTS_DIR"] || File.expand_path('config/hosts')
+
+def host_dirs
+  unless @hosts
+    cd HOSTS_DIR do
+      return @hosts = Dir['*']
+    end
+  end
+  @hosts
+end
+
+def capture_stdin
+  if STDIN.ready?
+    @stdin = STDIN.read
+  end
+end
+
+def cmd(string, opts = {})
+  if opts[:noop]
+    STDERR.puts string
+  else
+    STDERR.puts string if opts[:verbose]
+    IO.popen(string, 'w+') do |o|
+      o.write @stdin if @stdin
+      o.close_write
+      return o.read
+    end
+  end
+end
+
+def each_host
+  if host_filter = $opts['H']
+    host_filter = Regexp.new($opts['H'])
+  end
+  cd HOSTS_DIR do
+    for host_dir in host_dirs
+      host =
+        if host_dir =~ /([^-]+)-(.+)/
+          if u = $opts['u']
+            "#{u}@#$2"
+          else
+            "#$1@#$2"
+          end
+        elsif u = $opts['u']
+          "#{u}@#{host_dir}"
+        else
+          host_dir
+        end
+      if !host_filter or host =~ host_filter
+        yield host, host_dir
+      end
+    end
+  end
+end
+
+capture_stdin
+$opts = go('H:u:')
+
+case command = ARGV.shift
+when 'list'
+  puts enum_for(:each_host).map { |x| x * ' <- ' }
+when 'invoke'
+  each_host do |host, dir|
+    print cmd("ssh #{host} #{ARGV.map { |x| x.dump } * ' '}", :verbose => true)
+  end
+when 'sync'
+  each_host do |host, dir|
+    cmd("rsync -rLtDv #{dir}/.[a-zA-Z0-9]* #{host}:", :verbose => true)
+  end
+when 'put'
+  dest = ARGV.pop or fail 'destination required'
+  sources = ARGV.map { |f| File.expand_path(f) }
+  accepted = false
+  each_host do |host, dir|
+    string = "rsync -rltDv #{sources.map(&:inspect) * ' '} #{host}:#{dest}"
+    unless accepted
+      STDERR.puts string
+      STDERR.print "Really? (yes/no) "
+      if STDIN.gets =~ /^yes/i
+        accepted = true
+      else
+        exit 1
+      end
+    end
+    cmd(string, :verbose => true)
+  end
+when 'usage', nil
+  puts "Usage: #{File.basename($0)} put|list|invoke|sync|usage"
+end
