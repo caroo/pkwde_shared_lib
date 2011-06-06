@@ -6,6 +6,7 @@ Capistrano::Configuration.instance(:must_exist).load do
     set_deployment_server
     set :rails_env, defer{stage}
     default_run_options[:tty] = true
+    set_branch
   end
   
   def has_migrations?
@@ -31,6 +32,20 @@ Capistrano::Configuration.instance(:must_exist).load do
   set :deploy_via, :remote_cache
   set :copy_exclude, %w[.git]
   
+  def set_branch
+    set :branch, defer{
+      if tag = ENV['TAG']
+        tag
+      else
+        if stage.to_s == "testing"
+          "master"
+        else
+          puts 'a TAG environment variable is required'
+          exit 1
+        end
+      end
+    }
+  end
   # ==================================
   # = Setzen von Release-Ordnernamen =
   # ==================================
