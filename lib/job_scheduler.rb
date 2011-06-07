@@ -1,3 +1,5 @@
+require 'resque'
+
 module JobScheduler
   def self.schedule(job, *args)
     Module === job and job.ancestors.include?(Job) or
