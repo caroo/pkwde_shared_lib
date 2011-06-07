@@ -18,4 +18,6 @@ Gem::Specification.new do |s|
   s.add_dependency "capistrano", ">= 2.6.0"
   s.add_dependency "capistrano-ext", ">= 1.2.1"
   s.add_dependency "spruz", ">= 0.2.7"
+  s.add_dependency "nokogiri", ">= 1.4.4"
+  s.add_dependency "rake", ">= 0.8.7"
 end
