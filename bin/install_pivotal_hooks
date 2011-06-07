@@ -3,7 +3,7 @@
 require 'fileutils'
 include FileUtils::Verbose
 
-if path = `git rev-parse --show-toplevel`
+if path = `git rev-parse --show-toplevel`.strip
   git_hooks_path = "#{path}/.git/hooks"
   hooks_path = File.join(File.dirname(__FILE__), "..", "git-hooks")
   Dir[File.join(hooks_path, "*")].each do |source|
