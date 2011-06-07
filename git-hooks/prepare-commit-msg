@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+require 'tempfile'
+
+story_numbers = `git branch --no-color`.sub!(/^\* .*?(\d+(?:_\d+)*)$/) { break $1.split(/_/) }
+if story_numbers && !story_numbers.empty?
+  Tempfile.open('commit') do |output|
+    File.open(ARGV.first) do |template|
+      unless template.grep(/^[^#]/).any? { |line| line =~ /\[.*#\d+.*\]/ }
+        output.print "\n\n[#{story_numbers.map { |story_number| "##{story_number}" } * ' '}]"
+      end
+      template.rewind
+      output.write template.read
+      output.rewind
+      File.open(ARGV.first, 'w') do |message|
+        message.write output.read
+      end
+    end
+  end
+end

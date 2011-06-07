@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+include FileUtils::Verbose
+
+if path = `git rev-parse --show-toplevel`
+  git_hooks_path = "#{path}/.git/hooks"
+  hooks_path = File.join(File.dirname(__FILE__), "..", "git-hooks")
+  Dir[File.join(hooks_path, "*")].each do |source|
+    filename = File.basename source
+    destination = File.join(git_hooks_path, filename)
+    mv destination, destination + ".bak" if File.exists?(destination)
+    cp source, destination
+  end
+else
+  puts "Couldn't install git-hooks. No .git directory found..."
+end
