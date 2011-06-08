@@ -1,5 +1,5 @@
 require 'open-uri'
-require 'nokogiri'
+require 'rexml/document'
 require 'spruz/xt/full'
 require 'fileutils'
 
@@ -73,13 +73,14 @@ EOT
       @stories ||= begin
         story_ids(from_tag, to_tag).map do |story_id|
           begin
-            path = "/projects/#{pivotaltracker_project_id}/stories/#{story_id}"
-            story_xml = Nokogiri::XML(open("http://www.pivotaltracker.com/services/v3#{path}", 'X-TrackerToken' => pivotaltracker_token, 'Content-Type' => 'application/xml'))
+            url = "http://www.pivotaltracker.com/services/v3/projects/#{pivotaltracker_project_id}/stories/#{story_id}"
+            
+            story_xml = REXML::Document.new(open(url, 'X-TrackerToken' => pivotaltracker_token, 'Content-Type' => 'application/xml'))
             [
               [
-                story_xml.at_css("story story_type").content.upcase.ljust(7),
+                story_xml.elements["//story/story_type"].text.upcase.ljust(7),
                 "[##{story_id}]",
-                story_xml.at_css("story name").content
+                story_xml.elements["//story/name"].text
               ].join(" "),
               # for more information uncomment the following lines
               # "\thttps://www.pivotaltracker.com/story/show/#{story_id}",
