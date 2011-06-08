@@ -1,11 +1,15 @@
 Capistrano::Configuration.instance(:must_exist).load do
-  # =====================================================================
-  # = Verlange dass immer die letzte Version dieses gems verwendet wird =
-  # =====================================================================
+  # configure multistage environments
+  set :stages, %w[testing staging production]
+  
   on :load do
     set_deployment_server
     set :rails_env, defer{stage}
     default_run_options[:tty] = true
+  end
+  
+  # ensure ENV['TAG'] is set before running any tasks except of testing, staging and production
+  on :start, :except => stages do
     set_branch
   end
   
@@ -23,9 +27,6 @@ Capistrano::Configuration.instance(:must_exist).load do
     !ENV["FORCE_MIGRATIONS"].nil?
   end
   
-  # configure multistage environments
-  set :stages, %w[testing staging production]
-  
   #configure scm
   set :scm, :git
   set :scm_verbose, true
@@ -33,7 +34,7 @@ Capistrano::Configuration.instance(:must_exist).load do
   set :copy_exclude, %w[.git]
   
   def set_branch
-    set :branch, defer{
+    set :branch,
       if tag = ENV['TAG']
         tag
       else
@@ -44,7 +45,6 @@ Capistrano::Configuration.instance(:must_exist).load do
           exit 1
         end
       end
-    }
   end
   # ==================================
   # = Setzen von Release-Ordnernamen =
@@ -89,8 +89,8 @@ Capistrano::Configuration.instance(:must_exist).load do
 
     desc "Installiert die gems im aktuellen Release-Ordner."
     task :install do
-      on_rollback { run "cd #{current_path} && bundle install --binstubs=$HOME/ruby-enterprise/bin" }
-      run "cd #{release_path} && bundle install --binstubs=$HOME/ruby-enterprise/bin"
+      on_rollback { run "cd #{current_path} && bundle install --binstubs" }
+      run "cd #{release_path} && bundle install --binstubs"
     end
     
     desc "Checkt, ob alle gems installiert sind"
