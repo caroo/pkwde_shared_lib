@@ -38,7 +38,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       if tag = ENV['TAG']
         tag
       else
-        if stage.to_s == "testing"
+        if stage.to_s != "production"
           "master"
         else
           puts 'a TAG environment variable is required'
