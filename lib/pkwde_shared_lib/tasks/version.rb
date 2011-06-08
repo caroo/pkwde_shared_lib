@@ -1,5 +1,6 @@
 require 'rake'
 require file = File.join(File.dirname(__FILE__), *%w[.. .. pkwde.rb])
+require 'tempfile'
 include Pkwde::Tagging
 
 namespace :version do
