@@ -1,8 +1,8 @@
 Capistrano::Configuration.instance(:must_exist).load do
   
-  set :pid_file, defer{"#{current_path}/tmp/pids/#{application}.pid"}
-  set :log_file, defer{"#{current_path}/log/#{application}_stderror.log"}
-  set :rackup_file, defer{"#{current_path}/config.ru"}
+  set :pid_file, defer{"#{current_path}/tmp/pids/#{application}.pid"} unless exists?(:pid_file)
+  set :log_file, defer{"#{current_path}/log/#{application}_stderror.log"} unless exists?(:log_file)
+  set :rackup_file, defer{"#{current_path}/config.ru"} unless exists?(:rackup_file)
   
   namespace :deploy do
     desc "Restarts passenger standalone server."
