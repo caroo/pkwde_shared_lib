@@ -1,19 +1,15 @@
 Capistrano::Configuration.instance(:must_exist).load do |config|
   def update_crontab(file = "config/schedule.rb", opts = {})
-    run %{
-      cd #{current_path}/services;
-      for s in *;
-      do
-        pushd $s;
-        if [ -e #{file} ];
-        then
-          bundle exec whenever --load-file #{file} --set environment=#{stage || "development"} --update-crontab $s;
-        else
-          true;
-        fi;
-        popd;
-      done
-    }, opts
+    cc = CapistranoCommander.new
+    each_service do |full_path, service_path, service_name|
+      cron_config = File.join(*[service_path, file].reject(&:empty?))
+      next unless File.exists?(cron_config)
+      remote_path = File.join(current_path, service_path)
+      cc << "pushd #{remote_path}"
+      cc << "bundle exec whenever --load-file #{file} --set environment=#{stage || "development"} --update-crontab #{service_name}"
+      cc << "popd"
+    end
+    run cc.cmd, opts
   rescue Capistrano::NoMatchingServersError => e
     puts e.message
   end
