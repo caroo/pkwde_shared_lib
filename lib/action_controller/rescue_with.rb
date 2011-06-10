@@ -1,3 +1,5 @@
+require File.join(File.dirname(__FILE__), *%w[.. build_helper])
+
 module ActionController
   module RescueWith
     module ClassMethods
