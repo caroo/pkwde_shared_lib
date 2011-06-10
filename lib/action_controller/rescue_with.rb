@@ -11,7 +11,7 @@ module ActionController
 
     module InstanceMethods
       def render_data(data, opts = {})
-        status = opts[:status] || :success
+        status = opts[:status] || 200
         respond_to do |wants|
           wants.json do
             render :status => status, :json => data
