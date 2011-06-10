@@ -32,10 +32,10 @@ module ActionController
         status = opts[:status] || :internal_server_error
         respond_to do |wants|
           wants.json do
-            render build_json_errors(messages).html_safe, :status => status
+            render BuildHelper.build_json_errors(messages).html_safe, :status => status
           end
           wants.xml do
-            render build_xml_errors(messages).html_safe, :status => status
+            render BuildHelper.build_xml_errors(messages).html_safe, :status => status
           end
 
           if block_given?
