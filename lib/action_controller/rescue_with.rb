@@ -19,7 +19,7 @@ module ActionController
             render :status => status, :json => data
           end
           wants.xml do
-            render :status => status, :xml => data, :root => 'response', :dasherize => false
+            render :status => status, :xml => data.to_xml(:root => 'response', :dasherize => false)
           end
 
           if block_given?
@@ -32,10 +32,10 @@ module ActionController
         status = opts[:status] || :internal_server_error
         respond_to do |wants|
           wants.json do
-            render :text => BuildHelper.build_json_errors(messages).html_safe, :status => status
+            render :json => BuildHelper.build_json_errors(messages).html_safe, :status => status
           end
           wants.xml do
-            render :text => BuildHelper.build_xml_errors(messages).html_safe, :status => status
+            render :xml => BuildHelper.build_xml_errors(messages).html_safe, :status => status
           end
 
           if block_given?
