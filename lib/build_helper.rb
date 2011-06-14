@@ -32,14 +32,14 @@ module BuildHelper
     build_xml do |xml|
       xml.response do
         xml.errors do
-          case messages
-          when Exception
+          case
+          when messages.kind_of?(Exception)
             xml.error do
               xml.message messages.to_s
               xml.class_name messages.class.name
               xml.backtrace messages.backtrace if Rails.env != 'production' && messages.respond_to?(:backtrace)
             end
-          when ActiveModel::Errors
+          when (["ActiveModel::Errors", "ActiveRecord::Errors", "Validatable::Errors"] & messages.class.ancestors.map(&:to_s)).present?
             messages.each do |attribute, errors_array|
               errors_array.each do |error|
                 xml.error do
