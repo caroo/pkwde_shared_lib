@@ -45,6 +45,7 @@ require 'pkwde-capistrano-recipes/whenever'
 require 'pkwde-capistrano-recipes/cache'
 require 'pkwde-capistrano-recipes/maintenance'
 require 'pkwde-capistrano-recipes/apache'
+require 'pkwde-capistrano-recipes/nginx'
 begin
   require 'new_relic/recipes'
 rescue LoadError => e

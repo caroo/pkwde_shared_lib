@@ -1,7 +1,7 @@
 Capistrano::Configuration.instance(:must_exist).load do |config|
   require "nginx_generator"
-  set :nginx, defer{fetch :httpd_path, "/home/#{user}/nginx/sbin/nginx"}
-  set :nginx_config, defer{fetch(:nginx_config_path, "/etc/httpd/conf.d")}
+  set :nginx_bin, defer{fetch(:nginx_path, "/home/#{user}/nginx/sbin/nginx")}
+  set :nginx_config, defer{fetch(:nginx_config_path, "/home/#{user}/nginx/conf/includes")}
   set :nginx_config_backup, defer{ "#{nginx_config}.back"}
   
   namespace :nginx do
@@ -11,13 +11,13 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
       task :update do |variable|
         transaction do
           upload
-          test
+          test_configuration
           reload
         end
       end
       
-      task :test do
-        run "#{nginx} -t"
+      task :test_configuration do
+        run "#{nginx_bin} -t"
       end
       
       task :upload, :roles => :app do
@@ -26,12 +26,14 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
         run "rm -rf /tmp/nginx && mkdir -p /tmp/nginx"
         
         if with_newrelic.present?
-          NginxGenerator.new(rails_env, env_config, config_templates, {:use_newrelic => true}){|file_name, file_content|
+          NginxGenerator.new(rails_env, nginx_env_config, nginx_config_templates, {:use_newrelic => true}){|file_name, file_content|
+            run "mkdir -p /tmp/nginx/#{File.dirname(file_name)}"
             put file_content, "/tmp/nginx/#{file_name}", :MODE => "664", :hosts => with_newrelic.map(&:host)
           }
         end
         if without_newrelic.present?
           NginxGenerator.new(rails_env, env_config, config_templates, {:use_newrelic => false}){|file_name, file_content|
+            run "mkdir -p /tmp/nginx/#{File.dirname(file_name)}"
             put file_content, "/tmp/nginx/#{file_name}", :MODE => "664", :hosts => without_newrelic.map(&:host)
           }
         end
@@ -44,14 +46,14 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
       end
       
       task :reload do
-        run "#{nginx} -s reload"
+        run "#{nginx_bin} -s reload"
       end
     end # end namespace nginx/config
     
     # namespace nginx
     %w[stop quit reopen reload].each do |command|
       task command do
-        run "#{nginx} -s #{command}"
+        run "#{nginx_bin} -s #{command}"
       end
     end
   end # end namespace nginx

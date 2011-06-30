@@ -25,11 +25,13 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
         
         if with_newrelic.present?
           ApacheGenerator.new(rails_env, env_config, config_templates, {:use_newrelic => true}){|file_name, file_content|
+            run "mkdir -p /tmp/apache/#{File.dirname(file_name)}"
             put file_content, "/tmp/apache/#{file_name}", :MODE => "664", :hosts => with_newrelic.map(&:host)
           }
         end
         if without_newrelic.present?
           ApacheGenerator.new(rails_env, env_config, config_templates, {:use_newrelic => false}){|file_name, file_content|
+            run "mkdir -p /tmp/apache/#{File.dirname(file_name)}"
             put file_content, "/tmp/apache/#{file_name}", :MODE => "664", :hosts => without_newrelic.map(&:host)
           }
         end
