@@ -4,10 +4,15 @@ Capistrano::Configuration.instance(:must_exist).load do
     desc "Restarts the app in Passenger."
     task :restart, :roles => :app do
       run %{
-        for d in #{current_path}/services/*;
-        do
-          test -x $d/tmp && touch $d/tmp/restart.txt;
-        done
+        if test -d "#{current_path}/services";
+        then
+          for d in #{current_path}/services/*;
+          do
+            test -x $d/tmp && touch $d/tmp/restart.txt;
+          done
+        else
+          test -x #{current_path}/tmp && touch #{current_path}/tmp/restart.txt;
+        fi
       }
     end
 
