@@ -9,7 +9,6 @@ Capistrano::Configuration.instance(:must_exist).load do
       cc << "rm -Rf #{current_path}/public/sitemaps"
       cc << "mkdir -p #{shared_path}/sitemaps"
       cc << "ln -nfs #{shared_path}/sitemaps #{current_path}/public/sitemaps"
-      cc << "ln -nfs #{current_path}/public/sitemaps/sitemap.xml #{current_path}/public/sitemap.xml"
       cc << "mkdir -p #{shared_path}/video"
       cc << "rm -Rf #{current_path}/public/videos"
       cc << "ln -nfs #{shared_path}/video #{current_path}/public/videos"
