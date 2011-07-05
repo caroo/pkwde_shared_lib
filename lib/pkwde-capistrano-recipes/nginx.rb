@@ -12,7 +12,7 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
         transaction do
           upload
           test_configuration
-          reload
+          find_and_execute_task "nginx:restart"
         end
       end
       
@@ -41,20 +41,29 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
         run "rm -rf #{nginx_config_backup} && mv #{nginx_config} #{nginx_config_backup} && mv /tmp/nginx #{nginx_config}"
         on_rollback do
           run "test -d #{nginx_config_backup} && rm -rf #{nginx_config} && mv #{nginx_config_backup} #{nginx_config}"
-          find_and_execute_task "nginx:config:reload"
+          find_and_execute_task "nginx:restart"
         end
-      end
-      
-      task :reload do
-        run "#{nginx_bin} -s reload"
       end
     end # end namespace nginx/config
     
-    # namespace nginx
-    %w[stop quit reopen reload].each do |command|
+    # namespace nginx without reload, because it doesn't work properly
+    %w[stop quit reopen].each do |command|
       task command do
         run "#{nginx_bin} -s #{command}"
       end
+    end
+
+    desc "start nginx server"
+    task :start do
+      # capistrano will hangup on nginx start
+      run "#{nginx_bin} &"
+    end
+
+    desc "checks config and if okay, stop and start of nginx"
+    task :restart do
+      find_and_execute_task "nginx:config:test_configuration"
+      stop
+      start
     end
   end # end namespace nginx
 end # end capistrano configuration
