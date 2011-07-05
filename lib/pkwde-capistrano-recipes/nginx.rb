@@ -32,7 +32,7 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
           }
         end
         if without_newrelic.present?
-          NginxGenerator.new(rails_env, env_config, config_templates, {:use_newrelic => false}){|file_name, file_content|
+          NginxGenerator.new(rails_env, nginx_env_config, nginx_config_templates, {:use_newrelic => false}){|file_name, file_content|
             run "mkdir -p /tmp/nginx/#{File.dirname(file_name)}"
             put file_content, "/tmp/nginx/#{file_name}", :MODE => "664", :hosts => without_newrelic.map(&:host)
           }
