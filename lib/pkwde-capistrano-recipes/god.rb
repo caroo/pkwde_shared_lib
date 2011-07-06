@@ -30,7 +30,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       each_god do |remote_config, service|
         cc << "if bundle exec god 1>/dev/null status"
         cc << "then bundle exec god load #{remote_config}"
-        cc << "else RAILS_ENV=#{rails_env} bundle exec god -c #{remote_config}"
+        cc << "else RAILS_ENV=#{rails_env} bundle exec god -c #{remote_config} -l #{ god_log_dir || "/tmp" }/god.log"
         cc << "fi"
       end
       run cc.cmd
@@ -47,7 +47,7 @@ Capistrano::Configuration.instance(:must_exist).load do
         cc << "bundle exec god remove #{service}"
         cc << "bundle exec god load #{remote_config}"
         cc << "true"
-        cc << "else RAILS_ENV=#{rails_env} bundle exec god -c #{remote_config}"
+        cc << "else RAILS_ENV=#{rails_env} bundle exec god -c #{remote_config} -l #{ god_log_dir || "/tmp" }/god.log"
         cc << "fi"
       end
       run cc.cmd
