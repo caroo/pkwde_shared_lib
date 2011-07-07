@@ -40,10 +40,11 @@ def default_state_graph(w)
 end
 
 def start_workers(group, config)
-  rails_env   = ENV['RAILS_ENV'] or raise "environment variable RAILS_ENV is required"
-  rails_root  = ENV['RAILS_ROOT'] = File.dirname(caller.first)
-  num_workers = config.key?(:count) && config[:count][rails_env] || 1
-  name        = 'resque'
+  rails_env    = ENV['RAILS_ENV'] or raise "environment variable RAILS_ENV is required"
+  rails_root   = ENV['RAILS_ROOT'] = File.dirname(caller.first)
+  num_workers  = config.key?(:count) && config[:count][rails_env] || 1
+  name         = 'resque'
+  god_log_file = rails_env == "development" ? '/tmp/god.log' : '/var/log/god/god.log'
 
   num_workers.times do |num|
     God.watch do |w|
@@ -55,7 +56,7 @@ def start_workers(group, config)
       w.dir          = rails_root
       w.stop_signal  = "QUIT"
       w.stop_timeout = 12.hours
-      w.log          = File.join(rails_root, "log", "#{rails_env}.log")
+      w.log          = god_log_file
 
       default_state_graph w
     end
