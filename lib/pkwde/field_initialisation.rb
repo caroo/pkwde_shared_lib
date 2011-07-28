@@ -15,7 +15,7 @@ module Pkwde
     include CopyViaInitialisation
   end
 
-  module ServiceInitialisation
+  module FieldInitialisation
     include CopyViaInitialisation
 
     module ClassMethods
