@@ -4,6 +4,8 @@ module PkwdeSharedLib
       require 'pkwde/field_initialisation'
       require 'pkwde/json_serialisation'
       require 'job'
+      require 'mail_interceptor'
+      Mail.register_interceptor(MailInterceptor)
     end
   end
 end
