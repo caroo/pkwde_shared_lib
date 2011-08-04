@@ -6,3 +6,4 @@ bin
 !bin/deploy
 !bin/install_pivotal_hooks
 .rvmrc
+.*.sw[pon]
