@@ -9,7 +9,13 @@ module JobScheduler
   # If set to true or :execute the scheduler execute the Job locally, if set to
   # :schedule it pushes the Job onto the Resque queue, if set to
   def test_mode(to = true)
-    @@test_mode = to
+    if block_given?
+      old_value, @@test_mode = @@test_mode, to
+      yield
+      @@test_mode = old_value
+    else
+      @@test_mode = to
+    end
   end
 
   # Schedule طhe the module +job+ (which has to include the ::Job module) with
