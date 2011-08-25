@@ -19,7 +19,6 @@ Gem::Specification.new do |s|
   s.add_dependency "capistrano-ext", ">= 1.2.1"
   s.add_dependency "spruz", ">= 0.2.7"
   s.add_dependency "rake", ">= 0.8.7"
-  s.add_dependency "rails", ">= 2.3.10"
   s.add_dependency "json", ">= 1.4.6"
   
   s.add_development_dependency "test-unit", ">= 2.3.0"
