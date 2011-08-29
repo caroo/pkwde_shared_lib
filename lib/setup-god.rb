@@ -44,7 +44,7 @@ def start_workers(group, config)
   rails_root   = ENV['RAILS_ROOT'] = File.dirname(caller.first)
   num_workers  = config.key?(:count) && config[:count][rails_env] || 1
   name         = 'resque'
-  god_log_file = rails_env == "development" ? '/tmp/god.log' : '/var/log/god/god.log'
+  god_log_file = rails_env == "development" ? '/tmp/god.log' : File.join(rails_root, "log/god.log")
 
   num_workers.times do |num|
     God.watch do |w|
