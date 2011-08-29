@@ -1,4 +1,5 @@
 Capistrano::Configuration.instance(:must_exist).load do
+  require 'thread'
   namespace :util do
     namespace :log do
       desc "tail log files"
