@@ -28,12 +28,13 @@ def each_service(filter = nil)
   when String then filter.strip.split(/\s+/)
   when Array then filter
   end
+  filtered_paths.map! { |fp| Regexp.new(Regexp.quote(fp)) }
   current_path = FileUtils.pwd
   service_paths = File.exists?("services") ? Dir["services/[a-z]*"].select { |path| File.directory?(path) } : [""]
   service_paths.each do |service_path|
     full_path = File.join(*[current_path, service_path].reject(&:empty?))
     dirname = File.basename(full_path)
-    next if filtered_paths.include?(dirname)
+    next if !filtered_paths.empty? && !filtered_paths.any? { |fpr| fpr.match service_path }
     yield full_path, service_path, dirname
   end
 end
