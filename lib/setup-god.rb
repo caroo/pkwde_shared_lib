@@ -52,7 +52,7 @@ def start_workers(group, config)
       w.group        = group
       w.interval     = 5.seconds
       w.env          = { "QUEUE" => group, "RAILS_ENV" => rails_env }
-      w.start        = "rake resque:work"
+      w.start        = "bundle exec rake resque:work"
       w.dir          = rails_root
       w.stop_signal  = "QUIT"
       w.stop_timeout = 12.hours
