@@ -6,7 +6,7 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
       next unless File.exists?(cron_config)
       remote_path = File.join(current_path, service_path)
       cc << "pushd #{remote_path}"
-      cc << "bundle exec whenever --load-file #{file} --set environment=#{stage || "development"} --update-crontab #{service_name}"
+      cc << "(bundle exec whenever --load-file #{file} --set environment=#{stage || "development"} --update-crontab #{service_name} &)"
       cc << "popd"
     end
     run cc.cmd, opts

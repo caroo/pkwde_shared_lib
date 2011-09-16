@@ -16,7 +16,7 @@ Capistrano::Configuration.instance(:must_exist).load do
   def has_migrations?
     # run migrations when the DB flag is within the version number
     # or when the tag is not a version number
-    !(ENV['TAG'] =~ /\d{4}(?:\.\d{2}){4}/) or !!(ENV['TAG'] =~ /DB$/)
+    !!(ENV['TAG'] !~ /\d{4}(?:\.\d{2}){4}/ || ENV['TAG'] =~ /DB\Z/)
   end
   
   def hotfix?
