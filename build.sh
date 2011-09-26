@@ -5,5 +5,5 @@ case $1 in
 *)
   rvm ree@pkwde_shared_lib
   bundle install --binstubs
-  bundle exec rake ci
+  bundle exec rake test
 esac
