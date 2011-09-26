@@ -23,7 +23,7 @@ Capistrano::Configuration.instance(:must_exist).load do
 
       desc "Stop the god master process"
       task :stop do
-        run "cd #{current_path}; bundle exec god terminate"
+        run "cd #{current_path}; bundle exec god terminate; true"
       end
 
       desc "Status of the god master process"
