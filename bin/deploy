@@ -3,8 +3,8 @@ require 'rubygems'
 require 'fileutils'
 include FileUtils
 require 'io/wait'
-require 'spruz/go'
-include Spruz::GO
+require 'tins/go'
+include Tins::GO
 
 HOSTS_DIR = ENV["HOSTS_DIR"] || File.expand_path('config/hosts')
 

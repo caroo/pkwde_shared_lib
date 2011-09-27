@@ -1,6 +1,6 @@
 require 'open-uri'
 require 'rexml/document'
-require 'spruz/xt/full'
+require 'tins/xt/full'
 require 'fileutils'
 
 module Pkwde

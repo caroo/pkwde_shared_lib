@@ -2,7 +2,7 @@
 
 require 'fileutils'
 require 'erb'
-require 'spruz/xt/blank'
+require 'tins/xt/blank'
 
 class ApacheGenerator
   def initialize(rails_env, config_file = "variables.yml", input_dir = "conf.d", args = {}, &block)
