@@ -66,10 +66,10 @@ $opts = go('H:u:')
 
 case command = ARGV.shift
 when 'list'
-  puts enum_for(:each_host).map { |x| x * ' <- ' }
+  puts enum_for(:each_host).map { |*x| x * ' <- ' }
 when 'invoke'
   each_host do |host, dir|
-    print cmd("ssh #{host} #{ARGV.map { |x| x.dump } * ' '}", :verbose => true)
+    print cmd("ssh #{host} #{ARGV.map { |x| x.dump } * ' ' }", :verbose => true)
   end
 when 'sync'
   each_host do |host, dir|
