@@ -39,7 +39,7 @@ EOT
     end
 
     def current_branch
-      `git branch`.each { |line| line =~ /^\*\s+(.+)/ and return $1 }
+      `git branch`.lines.each { |line| line =~ /^\*\s+(.+)/ and return $1 }
       nil
     end
 
