@@ -1,3 +1,5 @@
+require 'tins/xt/full'
+
 module Job
   module ClassMethods
     attr_accessor :queue
@@ -12,11 +14,14 @@ module Job
           execute(*args, &block)
         end
       ensure
+        Rails.logger.full?(:flush)
         NewRelic::Agent.instance.shutdown
       end
     else # if Newrelic is not present, use fallback
       def perform(*args, &block)
         execute(*args, &block)
+      ensure
+        Rails.logger.full?(:flush)
       end
     end
 

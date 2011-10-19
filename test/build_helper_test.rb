@@ -1,6 +1,9 @@
 require 'test_helper'
 require 'action_view'
-Rails = Class.new
+module Rails
+  def self.logger
+  end
+end
 require 'build_helper'
 require 'active_record'
 
