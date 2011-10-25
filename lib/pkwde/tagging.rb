@@ -2,13 +2,35 @@ require 'open-uri'
 require 'rexml/document'
 require 'tins/xt/full'
 require 'fileutils'
+require 'active_support/core_ext/module/attribute_accessors'
+require 'active_support/core_ext/string/inflections'
 
 module Pkwde
   module Tagging
+    module Config
+      @@version_module_name = nil
+      @@pivotal_project_name = nil
+
+      mattr_writer :version_module_name
+      mattr_writer :pivotal_project_name
+
+      def self.version_module_name
+        @@version_module_name || 'pkwde'
+      end
+
+      def self.pivotal_project_name
+        @@pivotal_project_name || 'pkwde'
+      end
+
+      def self.version_module_constant_name
+        version_module_name.classify
+      end
+    end
+
     module_function
 
     def version_filename
-      File.join(Pkwde.lib_path, 'pkwde', 'version.rb')
+      File.join(Pkwde.lib_path, Pkwde::Tagging::Config.version_module_name, 'version.rb')
     end
 
     def write_version(time = Time.now)
@@ -17,7 +39,7 @@ module Pkwde
       FileUtils.mkdir_p(File.dirname(Pkwde::Tagging.version_filename))
       open(version_filename, 'w') do |output|
         output.puts <<EOT
-module Pkwde
+module #{Pkwde::Tagging::Config.version_module_constant_name}
   VERSION        = "#{version}"
   VERSION_ARRAY  = [ #{version.split(/\./).map(&:to_i) * ','} ]
 end
@@ -33,7 +55,7 @@ EOT
     def current_version
       old, $VERBOSE = $VERBOSE, nil
       load Pkwde::Tagging.version_filename
-      Pkwde::VERSION
+      "#{Pkwde::Tagging::Config.version_module_constant_name}::VERSION".constantize
     ensure
       $VERBOSE = old
     end
@@ -105,11 +127,11 @@ EOT
     end
 
     def pivotaltracker_token
-      pivotalprinterrc["default"]["token"]
+      pivotalprinterrc[Pkwde::Tagging::Config.pivotal_project_name]["token"]
     end
 
     def pivotaltracker_project_id
-      pivotalprinterrc["default"]["project"]
+      pivotalprinterrc[Pkwde::Tagging::Config.pivotal_project_name]["project"]
     end
 
     def pivotalprinterrc
