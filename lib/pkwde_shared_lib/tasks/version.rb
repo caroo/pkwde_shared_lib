@@ -17,15 +17,15 @@ namespace :version do
       changes = tag_changes(last_tag, 'HEAD')
       stories = story_lines(last_tag, 'HEAD')
       Tempfile.open('git-tag') do |out|
-        out.puts "New Version: #{Pkwde::VERSION}", '', changes, '', stories
+        out.puts "New Version: #{current_version}", '', changes, '', stories
         out.flush
         unless tag_message =~ /^New Version: /
           sh "git commit -F #{out.path} #{version_filename}"
         end
-        sh "git tag -a #{Pkwde::VERSION}#{has_migrations?(last_tag, 'HEAD') ? '.DB' : '' } -F #{out.path}"
+        sh "git tag -a #{current_version}#{has_migrations?(last_tag, 'HEAD') ? '.DB' : '' } -F #{out.path}"
       end
-    else
-      fail "No tags were found!"
+    else # the very first tag
+      sh "git tag -a #{current_version}.DB -m 'New Version: #{current_version}'"
     end
   end
 
