@@ -11,7 +11,7 @@ class ApacheGenerator
     Dir["#{input_dir}/**/*.erb"].each do |file|
       erb_file = File.read(file)
       erb_file.insert(0, "# GENERATED FILE, DO NOT CHANGE IT\n\n")
-      compiled = ERB.new(erb_file).result(binding)
+      compiled = ERB.new(erb_file, nil, "<>%-").result(binding)
       filename = file.sub("#{input_dir}/", "").sub(/\.erb$/, "")
       yield filename, compiled if block_given?
     end
