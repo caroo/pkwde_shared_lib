@@ -16,7 +16,7 @@ module PkwdeSharedLib
 
     initializer "pkwde_shared_lib.load_mail_extensions" do
       require 'mail_interceptor'
-      defined?(Mail) and Mail.register_interceptor(MailInterceptor)
+      defined?(ActionMailer::Base) and ActionMailer::Base.register_interceptor(MailInterceptor)
     end
 
     rake_tasks do
