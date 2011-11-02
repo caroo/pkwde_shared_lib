@@ -1,5 +1,7 @@
 module PkwdeSharedLib
   class Railtie < Rails::Railtie
+    config.pkwde_shared_lib = ActiveSupport::OrderedOptions.new
+
     initializer "pkwde_shared_lib.load_service_extensions" do
       JSON.create_id              = 'ruby_class'
       begin
@@ -14,9 +16,13 @@ module PkwdeSharedLib
       require 'job_scheduler'
     end
 
-    initializer "pkwde_shared_lib.load_mail_extensions" do
-      require 'mail_interceptor'
-      defined?(ActionMailer::Base) and ActionMailer::Base.register_interceptor(MailInterceptor)
+    config.after_initialize do |app|
+      if email = app.config.pkwde_shared_lib.mail_interceptor
+        require 'mail_interceptor'
+        MailInterceptor.receiver = email
+        MailInterceptor.litmus_email = app.config.pkwde_shared_lib.litmus_email
+        defined?(ActionMailer::Base) and ActionMailer::Base.register_interceptor(MailInterceptor)
+      end
     end
 
     rake_tasks do
