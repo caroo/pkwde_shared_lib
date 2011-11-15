@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require 'test_helper'
 require 'action_view'
 module Rails
@@ -50,7 +52,7 @@ class BuildHelperTest < ActionView::TestCase
     @response = build_response(body)
     assert_tag :tag => "response", :child => { :tag => "errors", :child => { :tag => "error" } }
     assert_tag :tag => "attribute", :content => "identifier"
-    assert_tag :tag => "message", :content => ee.errors["identifier"].to_s
+    assert_tag :tag => "message", :content => ee.errors["identifier"].first
   end
 
   def test_build_error_for_active_support_errors_json
@@ -58,7 +60,7 @@ class BuildHelperTest < ActionView::TestCase
     body = JSON(build_json_errors(ee.errors))
     assert_not_nil error = body["errors"].first
     assert_equal "identifier", error["attribute"]
-    assert_equal ee.errors["identifier"].to_s, error["message"]
+    assert_equal ee.errors["identifier"].first, error["message"]
   end
 
   def test_build_error_for_strings_xml

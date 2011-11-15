@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 Capistrano::Configuration.instance(:must_exist).load do
 
   namespace :deploy do 

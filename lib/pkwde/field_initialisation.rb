@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 module Pkwde
   # Include this module to mark it for copying in #clone and #dup via the Initialisation module
   module CopyViaInitialisation

@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require 'god'
 
 def default_state_graph(w)

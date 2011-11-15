@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 module PkwdeSharedLib
   class Railtie < Rails::Railtie
     config.pkwde_shared_lib = ActiveSupport::OrderedOptions.new

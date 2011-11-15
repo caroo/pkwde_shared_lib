@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require 'rubygems'
 require 'capistrano'
 require 'capistrano/ext/multistage'

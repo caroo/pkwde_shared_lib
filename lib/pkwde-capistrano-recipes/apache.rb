@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 Capistrano::Configuration.instance(:must_exist).load do |config|
   require "apache_generator"
   # set required variables

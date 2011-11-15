@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require 'builder'
 
 module BuildHelper
@@ -41,7 +43,7 @@ module BuildHelper
             end
           when (["ActiveModel::Errors", "ActiveRecord::Errors", "Validatable::Errors"] & messages.class.ancestors.map(&:to_s)).present?
             messages.each do |attribute, errors_array|
-              errors_array.each do |error|
+              Array(errors_array).each do |error|
                 xml.error do
                   xml.attribute attribute.to_s
                   xml.message error.to_s
@@ -73,7 +75,7 @@ module BuildHelper
       errors << error
     when (["ActiveModel::Errors", "ActiveRecord::Errors", "Validatable::Errors"] & messages.class.ancestors.map(&:to_s)).present?
       messages.each do |attribute, errors_array|
-        errors_array.each do |error_message|
+        Array(errors_array).each do |error_message|
           errors << { :message => error_message.to_s, :attribute => attribute.to_s }
         end
       end

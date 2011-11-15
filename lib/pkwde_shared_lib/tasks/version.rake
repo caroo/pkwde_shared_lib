@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require 'rake'
 require file = File.join(File.dirname(__FILE__), *%w[.. .. pkwde.rb])
 require 'tempfile'

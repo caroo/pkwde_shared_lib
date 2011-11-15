@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 Capistrano::Configuration.instance(:must_exist).load do |config|
   require "nginx_generator"
   set :nginx_bin, defer{fetch(:nginx_path, "/home/#{user}/nginx/sbin/nginx")}

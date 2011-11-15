@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 Capistrano::Configuration.instance(:must_exist).load do
   def each_god
     each_service(god_services) do |full_path, service_path, service_name|

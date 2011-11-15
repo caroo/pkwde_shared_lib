@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 module PkwdeSharedLib
   class ::String
     def make_url_friendly

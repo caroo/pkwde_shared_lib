@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require 'test/unit'
 require 'pkwde_shared_lib'
 

@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require File.join(File.dirname(__FILE__), *%w[.. build_helper])
 
 module ActionController

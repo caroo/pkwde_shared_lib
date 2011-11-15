@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 Capistrano::Configuration.instance(:must_exist).load do
   
   set :pid_file, defer{"#{current_path}/tmp/pids/#{application}.pid"} unless exists?(:pid_file)

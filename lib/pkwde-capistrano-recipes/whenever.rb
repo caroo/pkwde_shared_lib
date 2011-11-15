@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 Capistrano::Configuration.instance(:must_exist).load do |config|
   def update_crontab(file = "config/schedule.rb", opts = {})
     cc = CapistranoCommander.new

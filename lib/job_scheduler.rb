@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require 'job'
 require 'job_scheduler_error'
 

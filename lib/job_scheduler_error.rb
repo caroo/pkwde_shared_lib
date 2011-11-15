@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class JobSchedulerError < StandardError
   def self.wrap(original)
     wrapped = new("#{original.class} says: #{original.message}")

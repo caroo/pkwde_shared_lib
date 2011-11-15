@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require "active_support/core_ext/module/attribute_accessors"
 
 class MailInterceptor

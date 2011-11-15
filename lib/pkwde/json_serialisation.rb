@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 module Pkwde
   module JsonSerialisation
     module ClassMethods

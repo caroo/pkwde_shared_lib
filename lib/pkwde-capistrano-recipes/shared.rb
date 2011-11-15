@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 Capistrano::Configuration.instance(:must_exist).load do
   # configure multistage environments
   set :stages, %w[testing staging production]
