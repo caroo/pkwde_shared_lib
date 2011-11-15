@@ -29,6 +29,7 @@ module PkwdeSharedLib
 
     rake_tasks do
         load "pkwde_shared_lib/tasks/version.rake"
+        load "pkwde_shared_lib/tasks/newrelic.rake"
     end
   end
 end
