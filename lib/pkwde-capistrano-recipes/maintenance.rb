@@ -14,7 +14,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       cc << "mkdir -p #{shared_path}/video"
       cc << "rm -Rf #{current_path}/public/videos"
       cc << "ln -nfs #{shared_path}/video #{current_path}/public/videos"
-      for service in %w[pkwde petition_service api_service import_module exportable_service search_service statistics_service schwacke_service]
+      for service in %w[pkwde petition_service api_service import_module exportable_service statistics_service schwacke_service]
         service_path = "services/#{service}"
         # log dir
         cc << "rm -rf #{current_path}/#{service_path}/log"
