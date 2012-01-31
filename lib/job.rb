@@ -5,10 +5,6 @@ require 'tins/xt/full'
 module Job
   extend ActiveSupport::Concern
 
-  included do
-    alias execute perform
-  end
-
   module ClassMethods
     attr_accessor :queue
 
