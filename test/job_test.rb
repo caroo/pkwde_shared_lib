@@ -8,7 +8,7 @@ class JobTest < Test::Unit::TestCase
     include Job
 
     class << self
-      def execute(arg1)
+      def perform(arg1)
         @executed = arg1
       end
 
