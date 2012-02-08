@@ -1,4 +1,6 @@
 # encoding: UTF-8
+require 'active_support'
+require 'active_support/core_ext/class/attribute_accessors'
 
 module Pkwde
   # Include this module to mark it for copying in #clone and #dup via the Initialisation module
