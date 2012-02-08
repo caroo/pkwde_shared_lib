@@ -8,22 +8,22 @@ class InformationTest < Test::Unit::TestCase
     info = Information.new
     assert_equal false, info.valid?
     assert_equal true, info.errors[:debitor].any?
-    
+
     info = Information.for(nil, nil, nil, nil, nil)
     assert_equal false, info.valid?
     assert_equal true, info.errors[:debitor].any?
-    
+
     info = Information.for(*%w[identifier name street zip city])
     assert_equal false, info.valid?
     assert_equal false, info.errors[:debitor].any?
-    
+
     assert_equal "identifier", info.debitor.identifier
     assert_equal "name", info.debitor.name
     assert_equal "street", info.debitor.street
     assert_equal "zip", info.debitor.zip
     assert_equal "city", info.debitor.city
   end
-  
+
   def test_regulator_validation
     info = Information.for(*%w[identifier name street zip city])
     assert_equal false, info.valid?
@@ -31,7 +31,7 @@ class InformationTest < Test::Unit::TestCase
     info.self_regulated
     assert_equal false, info.valid?
     assert_equal false, info.errors[:regulator].any?
-    
+
     info = Information.for(*%w[identifier name street zip city])
     info.regulated_by(nil, nil, nil, nil, nil)
     assert_equal false, info.valid?
@@ -45,20 +45,20 @@ class InformationTest < Test::Unit::TestCase
     assert_equal "reg_zip", info.regulator.zip
     assert_equal "reg_city", info.regulator.city
   end
-  
+
   def test_bank_account_validation
     info = Information.for(*%w[identifier name street zip city])
     assert_equal false, info.valid?
     assert_equal false, info.errors[:bank_account].any?
-    
+
     info.pay_by_debit
     assert_equal false, info.valid?
     assert_equal true, info.errors[:bank_account].any?
-    
+
     info.assign_account(nil, nil, nil, nil)
     assert_equal false, info.valid?
     assert_equal true, info.errors[:bank_account].any?
-    
+
     info.assign_account(*%w[number owner bank_code bank_name])
     assert_equal false, info.valid?
     assert_equal false, info.errors[:bank_account].any?
@@ -67,75 +67,84 @@ class InformationTest < Test::Unit::TestCase
     assert_equal "bank_code", info.bank_account.bank_code
     assert_equal "bank_name", info.bank_account.bank_name
   end
-  
+
   def test_debit_validation
     info = Information.new
     info.debit = "hallo"
     assert_equal false, info.valid?
     assert_equal true, info.errors[:debit].any?
-    
+
     info.pay_by_money_transfer
     assert_equal false, info.valid?
     assert_equal false, info.errors[:bank_account].any?
     assert_equal false, info.errors[:debit].any?
-    
+
     info.pay_by_debit
     assert_equal false, info.valid?
     assert_equal false, info.errors[:debit].any?
     assert_equal true, info.errors[:bank_account].any?
   end
-  
+
   def test_delivery_method_validation
     info = Information.new
     info.delivery_method = "hallo"
     assert_equal false, info.valid?
     assert_equal true, info.errors[:delivery_method].any?
-    
+
     info.invoice_by_letter
     assert_equal false, info.valid?
     assert_equal false, info.errors[:delivery_method].any?
-    
-    info.invoice_to_email(nil)
+
+    info.invoice_by_email
+    assert_equal false, info.valid?
+    assert_equal false, info.errors[:delivery_method].any?
+  end
+
+  def test_delivery_email_validation
+    info = Information.new
     assert_equal false, info.valid?
     assert_equal true, info.errors[:delivery_email].any?
-    
-    info.invoice_to_email("aa@bb.cc")
+    info.invoice_to_email("aaa@bbb.cc")
+
     assert_equal false, info.valid?
     assert_equal false, info.errors[:delivery_email].any?
+    assert_equal "aaa@bbb.cc", info.delivery_email
   end
-  
+
   def test_contract_identifier_validation
     info = Information.new
     assert_equal false, info.valid?
     assert_equal true, info.errors[:contract_identifier].any?
-    
+
     info.with_contract_identifier("1234567890")
     assert_equal false, info.valid?
     assert_equal false, info.errors[:contract_identifier].any?
   end
-  
+
   def test_valid
     info = Information.for("deb_number", "deb_name", "deb_street", "deb_zip", "deb_city").
       self_regulated.
       with_contract_identifier("abcdefg").
       pay_by_money_transfer.
-      invoice_by_letter
+      invoice_by_letter.
+      invoice_to_email("aaa@bbb.cc")
     assert_equal true, info.valid?
   end
-  
+
   def test_should_have_version_method_and_track_file_changes
     assert version = BillingClient::Information.version
     assert_kind_of String, version
   end
-  
+
   def test_as_json
     info = Information.for("deb_number", "deb_name", "deb_street", "deb_zip", "deb_city").
       regulated_by("reg_number", "reg_name", "reg_street", "reg_zip", "reg_city").
       with_contract_identifier("abcdefg").
       pay_by_debit.
       assign_account("account_number", "account_owner", "bank_code", "bank_name").
+      invoice_by_email.
       invoice_to_email("aa@bb.cc")
-    assert_equal true, info.valid?
+    assert_equal true, info.valid?, info.errors.full_messages.inspect
     json_hash = info.as_json
     assert_equal "deb_number",        json_hash[:debitor_identifier]
     assert_equal "deb_name",          json_hash[:debitor_name]
