@@ -22,11 +22,11 @@ class BuildHelperTest < ActionView::TestCase
     column :identifier, :string
     validates_presence_of :identifier
   end
-  
+
   def setup
     Rails.stubs(:env).returns("development")
   end
-  
+
   def test_build_error_for_exception_xml
     e = begin; raise StandardError, "Bad habit"; rescue ; $! ; end
     body = build_xml_errors(e)

@@ -68,7 +68,7 @@ module BuildHelper
     errors = response[:errors] = []
     # need to ask this way, because we have to support both rails 2.3.x and 3.x.x versions
     # but rails 2.3.x does not have ActiveModel
-    case 
+    case
     when messages.kind_of?(Exception)
       error = { :message => messages.to_s, :class_name => messages.class.name }
       error[:backtrace] = messages.backtrace if Rails.env != 'production' && messages.respond_to?(:backtrace)

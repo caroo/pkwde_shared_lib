@@ -14,7 +14,7 @@ Capistrano::Configuration.instance(:must_exist).load do
   def god_services
     ENV['GOD_SERVICES']
   end
-  
+
   namespace :god do
     namespace :master do
 
@@ -47,7 +47,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       run cc.cmd
     end
 
-    # TODO this task does not terminate the god process itself. 
+    # TODO this task does not terminate the god process itself.
     desc "Restart the god watches for this service"
     task :restart do
       cc = CapistranoCommander.new

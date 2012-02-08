@@ -11,9 +11,9 @@ module Pkwde
       File.expand_path("lib")
     end
   end
-  
+
   $:.unshift lib_path unless $:.include?(lib_path)
-  
+
   require 'pkwde/tagging'
 
 end

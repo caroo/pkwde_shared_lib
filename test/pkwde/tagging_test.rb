@@ -10,7 +10,7 @@ class TaggingTest < Test::Unit::TestCase
     Pkwde::Tagging::Config.version_module_name = 'gnb'
     assert_equal "gnb", Pkwde::Tagging::Config.version_module_name
     assert_equal "Gnb", Pkwde::Tagging::Config.version_module_constant_name
-    
+
     assert_equal "pkwde", Pkwde::Tagging::Config.pivotal_project_name
     Pkwde::Tagging::Config.pivotal_project_name = "another_name"
     assert_equal "another_name", Pkwde::Tagging::Config.pivotal_project_name

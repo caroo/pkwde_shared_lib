@@ -12,7 +12,7 @@ Capistrano::Configuration.instance(:must_exist).load do
         end
       end
     end
-    
+
     namespace :newrelic do
       desc "Record a deployment in New Relic RPM (rpm.newrelic.com)"
       task :notice_deployment, :roles => :app, :except => {:no_release => true } do

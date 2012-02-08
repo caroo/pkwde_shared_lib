@@ -8,10 +8,10 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
   set :httpd, defer{fetch :httpd_path, "/etc/init.d/httpd"}
   set :apache_config, defer{fetch(:apache_config_path, "/etc/httpd/conf.d")}
   set :apache_config_backup, defer{ "#{apache_config}.back"}
-  
+
   namespace :apache do
     namespace :config do
-      
+
       desc "Updates apache configurations"
       task :update do |variable|
         transaction do
@@ -19,12 +19,12 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
           reload
         end
       end
-      
+
       task :upload, :roles => :app do
         with_newrelic = find_servers(:only => {:use_newrelic => true})
         without_newrelic = find_servers(:except => {:use_newrelic => true})
         run "rm -rf /tmp/apache && mkdir -p /tmp/apache"
-        
+
         if with_newrelic.present?
           ApacheGenerator.new(rails_env, env_config, config_templates, {:use_newrelic => true}){|file_name, file_content|
             run "mkdir -p /tmp/apache/#{File.dirname(file_name)}"
@@ -37,17 +37,17 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
             put file_content, "/tmp/apache/#{file_name}", :MODE => "664", :hosts => without_newrelic.map(&:host)
           }
         end
-        
+
         run "rm -rf #{apache_config_backup} && mv #{apache_config} #{apache_config_backup} && mv /tmp/apache #{apache_config}"
         on_rollback {run "test -d #{apache_config_backup} && rm -rf #{apache_config} && mv #{apache_config_backup} #{apache_config}"}
       end
-      
+
       task :reload do
         run "sudo #{httpd} reload"
         on_rollback { run "sudo #{httpd} reload"}
       end
     end
-    
+
     %w[start restart graceful graceful-stop stop reload].each do |command|
       task command do
         run "sudo #{httpd} #{command}"

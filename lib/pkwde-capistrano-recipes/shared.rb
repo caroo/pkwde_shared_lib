@@ -3,38 +3,38 @@
 Capistrano::Configuration.instance(:must_exist).load do
   # configure multistage environments
   set :stages, %w[testing staging production]
-  
+
   on :load do
     set_deployment_server
     set :rails_env, defer{stage}
     default_run_options[:tty] = true
   end
-  
+
   # ensure ENV['TAG'] is set before running any tasks except of testing, staging and production
   on :start, :except => stages do
     set_branch
   end
-  
+
   def has_migrations?
     # run migrations when the DB flag is within the version number
     # or when the tag is not a version number
     !!(ENV['TAG'] !~ /\d{4}(?:\.\d{2}){4}/ || ENV['TAG'] =~ /DB\Z/)
   end
-  
+
   def hotfix?
     !ENV["HOTFIX"].nil?
   end
-  
+
   def run_migrations?
     !ENV["FORCE_MIGRATIONS"].nil?
   end
-  
+
   #configure scm
   set :scm, :git
   set :scm_verbose, true
   set :deploy_via, :remote_cache
   set :copy_exclude, %w[.git]
-  
+
   def set_branch
     set :branch,
       if tag = ENV['TAG']
@@ -94,11 +94,11 @@ Capistrano::Configuration.instance(:must_exist).load do
       on_rollback { run "cd #{current_path} && bundle install --binstubs" }
       run "cd #{release_path} && bundle install --binstubs"
     end
-    
+
     desc "Checkt, ob alle gems installiert sind"
     task :check do
       run "cd #{release_path} && bundle check"
     end
   end
-  
+
 end

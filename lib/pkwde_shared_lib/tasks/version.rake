@@ -97,5 +97,5 @@ namespace :version do
     task :story_lines do
       puts story_lines(tags.last, 'HEAD')
     end
-  end 
+  end
 end

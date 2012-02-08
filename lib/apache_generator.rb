@@ -17,13 +17,13 @@ class ApacheGenerator
       yield filename, compiled if block_given?
     end
   end
-  
+
   private
-  
+
     def create_methods(configuration, args = {})
       configuration.merge(args).each do |key, value|
         self.class.send(:define_method, key) { value }
       end
     end
-  
+
 end

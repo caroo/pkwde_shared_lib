@@ -98,7 +98,7 @@ EOT
         story_ids(from_tag, to_tag).map do |story_id|
           begin
             url = "http://www.pivotaltracker.com/services/v3/projects/#{pivotaltracker_project_id}/stories/#{story_id}"
-            
+
             story_xml = REXML::Document.new(open(url, 'X-TrackerToken' => pivotaltracker_token, 'Content-Type' => 'application/xml'))
             [
               [

@@ -37,7 +37,7 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
           update_crontab
         end
       end
-      
+
       desc "Delete all cronjobs"
       task :delete, :roles => :cron do
         check_and_execute_cron_task do
