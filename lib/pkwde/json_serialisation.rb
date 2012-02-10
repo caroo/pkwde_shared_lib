@@ -9,11 +9,22 @@ module Pkwde
         hash.symbolize_keys_recursive!
         new(hash)
       end
+
+      attr_accessor :create_class
     end
 
     module InstanceMethods
       def as_json(options = nil)
-        fields.as_json(options).merge({JSON.create_id => self.class.name})
+        object = fields.as_json(options)
+        case create_class = self.class.create_class
+        when false
+          ;
+        when nil
+          object.update({JSON.create_id => self.class.name})
+        else
+          object.update({JSON.create_id => create_class.to_s })
+        end
+        object
       end
 
       def to_json(*a)
