@@ -18,7 +18,7 @@ module Job
           yield(*args)
         end
       ensure
-        Rails.logger.full?(:flush)
+        Rails.logger.full?{|logger| logger.flush if logger.respond_to?(:flush)}
         NewRelic::Agent.instance.shutdown
       end
     end
