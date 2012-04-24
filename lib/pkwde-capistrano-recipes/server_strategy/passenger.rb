@@ -3,8 +3,7 @@
 Capistrano::Configuration.instance(:must_exist).load do
 
   namespace :deploy do
-    desc "Restarts the app in Passenger."
-    task :restart, :roles => :app do
+    task :service_restart, :roles => :app do
       run %{
         if test -d "#{current_path}/services";
         then
@@ -16,6 +15,11 @@ Capistrano::Configuration.instance(:must_exist).load do
           test -x #{current_path}/tmp && touch #{current_path}/tmp/restart.txt;
         fi
       }
+    end
+
+    desc "Restarts the app in Passenger."
+    task :restart, :roles => :app do
+      find_and_execute_task "deploy:service_restart"
     end
 
     desc "Starts the app in Passenger (which virtually does nothing)."
