@@ -43,7 +43,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       DESC
       task :disable, :roles => :web, :except => { :no_release => true } do
         require 'erb'
-        on_rollback { run "rm #{shared_path}/system/maintenance.html" }
+        on_rollback { run "rm -f #{shared_path}/system/maintenance.html" }
 
         template_path = File.join('config', 'deploy', 'templates', 'maintenance.html.erb')
         template = File.read(template_path)
@@ -54,7 +54,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       end
 
       task :enable, :roles => :web, :except => { :no_release => true } do
-        run "rm #{shared_path}/system/maintenance.html"
+        run "rm -f #{shared_path}/system/maintenance.html"
         puts "*" * 80, " Going online at #{(going_online = Time.now).strftime("%FT%T")} (#{"%.3f secs" % ($going_offline ? going_online - $going_offline : 0.0)}) ".center(80, "*"), "*" * 80
       end
 
