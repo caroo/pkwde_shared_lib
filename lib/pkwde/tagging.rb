@@ -60,7 +60,9 @@ EOT
     def current_version
       old, $VERBOSE = $VERBOSE, nil
       load Pkwde::Tagging.version_filename
-      "#{Pkwde::Tagging::Config.version_module_constant_name}::VERSION".constantize
+      name = Pkwde::Tagging::Config.version_module_constant_name
+      constant = Object.const_defined?(name) ? Object.const_get(name) : Object.const_missing(name)
+      constant::VERSION
     ensure
       $VERBOSE = old
     end
