@@ -13,13 +13,13 @@ Capistrano::Configuration.instance(:must_exist).load do |config|
     end
     run cc.cmd, opts
   rescue Capistrano::NoMatchingServersError => e
-    puts e.message
+    logger.important e.message
   end
 
   def show_crontab(opts = {})
     run "crontab -l; true", opts
   rescue Capistrano::NoMatchingServersError => e
-    puts e.message
+    logger.important e.message
   end
 
   def check_and_execute_cron_task(&block)

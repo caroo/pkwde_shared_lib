@@ -43,7 +43,7 @@ Capistrano::Configuration.instance(:must_exist).load do
         if stage.to_s != "production"
           "master"
         else
-          puts 'a TAG environment variable is required'
+          logger.important 'a TAG environment variable is required'
           exit 1
         end
       end
@@ -77,10 +77,15 @@ Capistrano::Configuration.instance(:must_exist).load do
 
   def set_deployment_server
     server_type = fetch(:deployment_server, "passenger")
-    server_strategy_file = File.join(File.dirname(__FILE__), "server_strategy", server_type.to_s)
-    require server_strategy_file
+    if server_type == 'no_op'
+      logger.debug "The 'no_op' deployment strategy chosen. Falling back to capistrano's default deploy tasks"
+    else
+      logger.debug "Loading #{server_type.inspect} deployment strategy"
+      server_strategy_file = File.join(File.dirname(__FILE__), "server_strategy", server_type.to_s)
+      require server_strategy_file
+    end
   rescue LoadError => e
-    raise Capistrano::Error, "Could not find server strategy file '#{server_strategy_file}'"
+    logger.important "Could not find server strategy file '#{server_strategy_file}'.  Falling back to capistrano's default deploy tasks"
   end
 
   namespace :gems do
@@ -100,5 +105,4 @@ Capistrano::Configuration.instance(:must_exist).load do
       run "cd #{release_path} && bundle check"
     end
   end
-
 end
