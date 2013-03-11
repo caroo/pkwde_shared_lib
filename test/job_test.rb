@@ -1,6 +1,5 @@
 # encoding: UTF-8
-
-require 'test/unit'
+require 'test_helper'
 require 'job_scheduler'
 
 class JobTest < Test::Unit::TestCase

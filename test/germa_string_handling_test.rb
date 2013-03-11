@@ -1,6 +1,6 @@
 # encoding: UTF-8
 
-require 'test/unit'
+require 'test_helper'
 require 'pkwde_shared_lib'
 
 class GermaStringHandlingTest < Test::Unit::TestCase

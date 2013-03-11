@@ -4,8 +4,6 @@ require 'open-uri'
 require 'rexml/document'
 require 'tins/xt/full'
 require 'fileutils'
-require 'active_support/core_ext/module/attribute_accessors'
-require 'active_support/core_ext/string/inflections'
 
 module Pkwde
   module Tagging
@@ -13,11 +11,16 @@ module Pkwde
       @@version_module_name = nil
       @@pivotal_project_name = nil
 
-      mattr_writer :version_module_name
-      mattr_writer :pivotal_project_name
+      def self.version_module_name=(name)
+        @@version_module_name = name
+      end
 
       def self.version_module_name
         @@version_module_name || 'pkwde'
+      end
+
+      def self.pivotal_project_name=(name)
+        @@pivotal_project_name = name
       end
 
       def self.pivotal_project_name
@@ -25,7 +28,7 @@ module Pkwde
       end
 
       def self.version_module_constant_name
-        version_module_name.classify
+        version_module_name.split('_').collect!{ |w| w.capitalize }.join
       end
     end
 
