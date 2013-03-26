@@ -49,13 +49,17 @@ Capistrano::Configuration.instance(:must_exist).load do
         template = File.read(template_path)
         result = ERB.new(template).result(binding)
 
-        logger.info "*" * 80, " Going offline at #{($going_offline = Time.now).strftime("%FT%T")} ".center(80, '*'), "*" * 80
+        logger.info "*" * 80
+        logger.info " Going offline at #{($going_offline = Time.now).strftime("%FT%T")} ".center(80, '*')
+        logger.info "*" * 80
         put result, "#{shared_path}/system/maintenance.html", :mode => 0644
       end
 
       task :enable, :roles => :web, :except => { :no_release => true } do
         run "rm -f #{shared_path}/system/maintenance.html"
-        logger.info "*" * 80, " Going online at #{(going_online = Time.now).strftime("%FT%T")} (#{"%.3f secs" % ($going_offline ? going_online - $going_offline : 0.0)}) ".center(80, "*"), "*" * 80
+        logger.info "*" * 80
+        logger.info " Going online at #{(going_online = Time.now).strftime("%FT%T")} (#{"%.3f secs" % ($going_offline ? going_online - $going_offline : 0.0)}) ".center(80, "*")
+        logger.info "*" * 80
       end
 
     end
