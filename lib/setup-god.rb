@@ -45,6 +45,7 @@ def start_workers(group, config)
   rails_env    = ENV['RAILS_ENV'] or raise "environment variable RAILS_ENV is required"
   rails_root   = ENV['RAILS_ROOT'] = File.dirname(caller.first)
   num_workers  = config.key?(:count) && config[:count][rails_env] || 1
+  start_command = config.key?(:start_command) && config[:start_command] || 'bundle exec rake resque:work'
   name         = 'resque'
   god_log_file = rails_env == "development" ? '/tmp/god.log' : File.join(rails_root, "log/god.log")
 
@@ -54,7 +55,7 @@ def start_workers(group, config)
       w.group        = group
       w.interval     = 5.seconds
       w.env          = { "QUEUE" => group, "RAILS_ENV" => rails_env }
-      w.start        = "bundle exec rake resque:work"
+      w.start        = start_command
       w.dir          = rails_root
       w.stop_signal  = "QUIT"
       w.stop_timeout = 12.hours
