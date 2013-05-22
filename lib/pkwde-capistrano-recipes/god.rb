@@ -43,7 +43,10 @@ Capistrano::Configuration.instance(:must_exist).load do
       cc = CapistranoCommander.new
       cc << "cd #{current_path}"
       each_god do |remote_config, service|
-        cc << "RAILS_ENV=#{rails_env} #{god_command} -c #{remote_config} -l #{ god_log_dir || "/tmp" }/god.log"
+        cc << "if #{god_command} 1>/dev/null status"
+        cc << "then ( RAILS_ENV=#{rails_env} #{god_command} load #{remote_config} & )"
+        cc << "else RAILS_ENV=#{rails_env} #{god_command} -c #{remote_config} -l #{ god_log_dir || "/tmp" }/god.log"
+        cc << "fi"
       end
       run cc.cmd
     end
@@ -57,7 +60,7 @@ Capistrano::Configuration.instance(:must_exist).load do
         cc << "if #{god_command} 1>/dev/null status"
         cc << "then (#{god_command} stop #{service}"
         cc << "#{god_command} remove #{service}"
-        cc << "#{god_command} load #{remote_config}"
+        cc << "RAILS_ENV=#{rails_env} #{god_command} load #{remote_config}"
         cc << "true & )"
         cc << "else RAILS_ENV=#{rails_env} #{god_command} -c #{remote_config} -l #{ god_log_dir || "/tmp" }/god.log"
         cc << "fi"
