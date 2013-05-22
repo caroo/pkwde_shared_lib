@@ -15,22 +15,26 @@ Capistrano::Configuration.instance(:must_exist).load do
     ENV['GOD_SERVICES']
   end
 
+  def god_command
+    fetch(:god_command, 'god')
+  end
+
   namespace :god do
     namespace :master do
 
       desc "Start the god master process"
       desc :start do
-        run "RAILS_ENV=#{rails_env} bundle exec god -l #{ god_log_dir || "/tmp" }/god.log"
+        run "RAILS_ENV=#{rails_env} #{god_command} -l #{ god_log_dir || "/tmp" }/god.log"
       end
 
       desc "Stop the god master process"
       task :stop do
-        run "cd #{current_path}; bundle exec god terminate; true"
+        run "cd #{current_path}; #{god_command} terminate; true"
       end
 
       desc "Status of the god master process"
       task :status do
-        run "cd #{current_path}; bundle exec god status; true"
+        run "cd #{current_path}; #{god_command} status; true"
       end
     end
 
@@ -39,10 +43,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       cc = CapistranoCommander.new
       cc << "cd #{current_path}"
       each_god do |remote_config, service|
-        cc << "if bundle exec god 1>/dev/null status"
-        cc << "then (bundle exec god load #{remote_config} & )"
-        cc << "else RAILS_ENV=#{rails_env} bundle exec god -c #{remote_config} -l #{ god_log_dir || "/tmp" }/god.log"
-        cc << "fi"
+        cc << "RAILS_ENV=#{rails_env} #{god_command} -c #{remote_config} -l #{ god_log_dir || "/tmp" }/god.log"
       end
       run cc.cmd
     end
@@ -53,12 +54,12 @@ Capistrano::Configuration.instance(:must_exist).load do
       cc = CapistranoCommander.new
       cc << "cd #{current_path}"
       each_god do |remote_config, service|
-        cc << "if bundle exec god 1>/dev/null status"
-        cc << "then (bundle exec god stop #{service}"
-        cc << "bundle exec god remove #{service}"
-        cc << "bundle exec god load #{remote_config}"
+        cc << "if #{god_command} 1>/dev/null status"
+        cc << "then (#{god_command} stop #{service}"
+        cc << "#{god_command} remove #{service}"
+        cc << "#{god_command} load #{remote_config}"
         cc << "true & )"
-        cc << "else RAILS_ENV=#{rails_env} bundle exec god -c #{remote_config} -l #{ god_log_dir || "/tmp" }/god.log"
+        cc << "else RAILS_ENV=#{rails_env} #{god_command} -c #{remote_config} -l #{ god_log_dir || "/tmp" }/god.log"
         cc << "fi"
       end
       run cc.cmd
@@ -70,9 +71,9 @@ Capistrano::Configuration.instance(:must_exist).load do
       cc = CapistranoCommander.new
       cc << "cd #{current_path}"
       each_god do |remote_config, service|
-        cc << "( if bundle exec god 1>/dev/null status"
-        cc << "then bundle exec god stop #{service}"
-        cc << "bundle exec god remove #{service}"
+        cc << "( if #{god_command} 1>/dev/null status"
+        cc << "then #{god_command} stop #{service}"
+        cc << "#{god_command} remove #{service}"
         cc << "fi & )"
       end
       run cc.cmd
@@ -84,10 +85,10 @@ Capistrano::Configuration.instance(:must_exist).load do
       cc << "cd #{current_path}"
       if god_services
         each_god do |remote_config, service|
-          cc << "bundle exec god status #{service}"
+          cc << "#{god_command} status #{service}"
         end
       else
-        cc << "bundle exec god status"
+        cc << "#{god_command} status"
       end
       cc << 'true'
       run cc.cmd
