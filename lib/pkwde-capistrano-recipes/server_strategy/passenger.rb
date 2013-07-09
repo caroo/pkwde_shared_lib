@@ -9,7 +9,7 @@ Capistrano::Configuration.instance(:must_exist).load do
         then
           for d in #{current_path}/services/*;
           do
-            test -x $d/tmp && touch $d/tmp/restart.txt;
+            test -x $d/tmp && touch $d/tmp/restart.txt && touch $d/tmp/rollout_online;
           done
         else
           test -x #{current_path}/tmp && touch #{current_path}/tmp/restart.txt;
