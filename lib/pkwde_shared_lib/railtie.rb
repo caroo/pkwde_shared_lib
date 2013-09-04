@@ -6,10 +6,7 @@ module PkwdeSharedLib
 
     initializer "pkwde_shared_lib.load_service_extensions" do
       JSON.create_id              = 'ruby_class'
-      begin
-        ActiveSupport::JSON.backend = 'JSONGem'
-      rescue LoadError
-      end
+      ActiveSupport::JSON.backend = :json_gem
       require 'pkwde/field_initialisation'
       require 'pkwde/json_serialisation'
     end
