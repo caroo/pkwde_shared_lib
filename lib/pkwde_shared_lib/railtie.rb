@@ -6,7 +6,15 @@ module PkwdeSharedLib
 
     initializer "pkwde_shared_lib.load_service_extensions" do
       JSON.create_id              = 'ruby_class'
-      ActiveSupport::JSON.backend = :json_gem
+      begin
+        require 'active_support'
+        ActiveSupport::JSON.backend = if ActiveSupport::VERSION::STRING >= "3.1.0" # uses MultiJson
+          :json_gem
+        else
+          :JSONGem
+        end
+      rescue LoadError
+      end
       require 'pkwde/field_initialisation'
       require 'pkwde/json_serialisation'
     end
