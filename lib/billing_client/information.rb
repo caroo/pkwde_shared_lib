@@ -76,7 +76,15 @@ module BillingClient
     end
 
     def assign_account(number, owner, bank_code, bank_name)
+      ActiveSupport::Deprecation.warn("After February 2014, the sepa debit is used! Use assign_sepa_account instead")
       self.bank_account = BankAccount.new(number, owner, bank_code, bank_name)
+      self
+    end
+
+    ##
+    # Used to assign an bank account used by the sepa system
+    def assign_sepa_account(iban, bic, owner, bank_name = nil, number = nil, bank_code = nil )
+      self.bank_account = BankAccount.sepa(iban, bic, owner, bank_name, number, bank_code)
       self
     end
 
@@ -106,6 +114,8 @@ module BillingClient
         :debit_account_owner  => bank_account.full?(:owner),
         :debit_bank_code      => bank_account.full?(:bank_code),
         :debit_bank_name      => bank_account.full?(:bank_name),
+        :debit_iban           => bank_account.full?(:iban),
+        :debit_bic            => bank_account.full?(:bic),
         :delivery_method      => delivery_method,
         :delivery_email       => delivery_email,
         :version              => self.class.version
@@ -128,10 +138,20 @@ module BillingClient
 
   class BankAccount
     include ActiveModel::Validations
-    attr_accessor :number, :owner, :bank_code, :bank_name
-    validates_presence_of :number, :owner, :bank_code, :bank_name
-    def initialize(number, owner, bank_code, bank_name)
-      @number, @owner, @bank_code, @bank_name = number, owner, bank_code, bank_name
+    attr_accessor :number, :owner, :bank_code, :bank_name, :iban, :bic, :sepa
+
+    validates_presence_of :number, :owner, :bank_code, :bank_name, unless: :sepa
+    validates_presence_of :iban, :bic, :owner, if: :sepa
+
+    def initialize(number, owner, bank_code, bank_name, iban = nil, bic = nil)
+      @sepa = false
+      @number, @owner, @bank_code, @bank_name, @iban, @bic = number, owner, bank_code, bank_name, iban, bic
+    end
+
+    def self.sepa(iban, bic, owner, bank_name = nil, number = nil, bank_code = nil)
+      account = new(number, owner, bank_code, bank_name, iban, bic)
+      account.sepa = true
+      account
     end
   end
 end
