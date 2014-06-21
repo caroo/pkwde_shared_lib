@@ -86,7 +86,7 @@ EOT
 
     def tags
       system 'git fetch --tags'
-      `git tag`.split(/\n/)
+      `git tag`.split(/\n/).select{|tag| tag =~ /\A\d{4}\.\d{2}\.\d{2}\.\d{2}\.\d{2}(\.DB)?\Z/}
     end
 
     def has_migrations?(from_tag = tags.last, to_tag = 'HEAD')
