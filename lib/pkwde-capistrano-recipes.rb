@@ -25,12 +25,12 @@ require 'fileutils'
 # yield full_path, path relative_to_current, directory_name
 def each_service(filter = nil)
   current_path = FileUtils.pwd
-  filter_services =
-    case filter
+  filter_services = case filter
     when nil then []
     when String then filter.strip.split(/\s+/)
     when Array then filter
-    end
+  end
+
   service_pathes =
     if File.exists?("services")
       Dir["services/[a-z]*"].select { |path| File.directory?(path) }

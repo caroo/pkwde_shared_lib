@@ -2,13 +2,14 @@
 
 Capistrano::Configuration.instance(:must_exist).load do
   def each_god
-    each_service(god_services) do |full_path, service_path, service_name|
-      god_config = File.join(*[service_path, "setup.god"].reject(&:empty?))
-      next unless File.exists?(god_config)
-      remote_config = "#{current_path}/#{god_config}"
-      logger.trace remote_config
-      yield remote_config, service_name
-    end
+    []
+    # each_service() do |full_path, service_path, service_name|
+    #   god_config = File.join(*[service_path, "setup.god"].reject(&:empty?))
+    #   next unless File.exists?(god_config)
+    #   remote_config = "#{current_path}/#{god_config}"
+    #   logger.trace remote_config
+    #   yield remote_config, service_name
+    # end
   end
 
   def god_services

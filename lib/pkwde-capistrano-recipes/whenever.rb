@@ -3,7 +3,7 @@
 Capistrano::Configuration.instance(:must_exist).load do |config|
   def update_crontab(file = "config/schedule.rb", opts = {})
     cc = CapistranoCommander.new
-    each_service do |full_path, service_path, service_name|
+    each_service(["exportable_service"]) do |full_path, service_path, service_name|
       cron_config = File.join(*[service_path, file].reject(&:empty?))
       next unless File.exists?(cron_config)
       remote_path = File.join(current_path, service_path)
