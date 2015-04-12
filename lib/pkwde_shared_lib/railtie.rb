@@ -8,7 +8,7 @@ module PkwdeSharedLib
       JSON.create_id              = 'ruby_class'
       begin
         require 'active_support'
-        ActiveSupport::JSON.backend = ActiveSupport::VERSION::STRING >= "3.1.0" # uses MultiJson
+        ActiveSupport::JSON.backend = if ActiveSupport::VERSION::STRING >= "3.1.0" # uses MultiJson
           :json_gem
         else
           :JSONGem
