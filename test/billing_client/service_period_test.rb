@@ -19,7 +19,6 @@ class ServicePeriodTest < Test::Unit::TestCase
     service_period = ServicePeriod.from_year_month("2012-02")
     assert_equal 2012, service_period.year
     assert_equal 2, service_period.month
-    assert service_period.frozen?
     assert_equal "2012-02", service_period.to_s
     assert_equal '#<BillingClient::ServicePeriod "2012-02">', service_period.inspect
   end

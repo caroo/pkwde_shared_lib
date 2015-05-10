@@ -29,7 +29,6 @@ module BillingClient
       @month    = month
       @duration = duration
       valid? or raise ArgumentError, "validation failed for #{self}: #{errors.full_messages.inspect}"
-      freeze
     end
 
     def payable?(current_period)
