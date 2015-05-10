@@ -96,6 +96,20 @@ class ServicePeriodTest < Test::Unit::TestCase
     assert_equal ServicePeriod.new(2013, 9), service_period.next.next
   end
 
+  def test_should_have_prev_method
+    service_period = ServicePeriod.new(2012, 2)
+    assert_equal ServicePeriod.new(2012, 1), service_period.prev
+    assert_equal ServicePeriod.new(2011, 12), service_period.prev.prev
+
+    service_period = ServicePeriod.new(2012, 1, 2)
+    assert_equal ServicePeriod.new(2011, 11), service_period.prev
+    assert_equal ServicePeriod.new(2011, 9), service_period.prev.prev
+
+    service_period = ServicePeriod.new(2012, 9, 6)
+    assert_equal ServicePeriod.new(2012, 3), service_period.prev
+    assert_equal ServicePeriod.new(2011, 9), service_period.prev.prev
+  end
+
   def test_payable_method
     assert_equal true, ServicePeriod.new(2012, 2).payable?(ServicePeriod.new(2012, 2))
     assert_equal true, ServicePeriod.new(2012, 2, 6).payable?(ServicePeriod.new(2012, 2))

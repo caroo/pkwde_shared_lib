@@ -55,6 +55,11 @@ module BillingClient
       self.class.new(next_start_at.year, next_start_at.month, duration)
     end
 
+    def prev
+      prev_start_at = start_at - duration.months
+      self.class.new(prev_start_at.year, prev_start_at.month, duration)
+    end
+
     def start_at
       DateTime.new(year, month)
     end
